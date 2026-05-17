@@ -9,6 +9,13 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use((err, req, res, next) => {
+    if (err?.type === 'entity.parse.failed') {
+        return res.status(400).json({ error: 'JSON inválido' });
+    }
+    next(err);
+});
+
 app.get('/', (req, res) => {
     res.send('¡Código base del backend de FinFlow!');
 });
