@@ -4,8 +4,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "jest",
-    "test:integration": "cross-env NODE_ENV=test jest --runInBand --testPathPatterns=tests/integration"
+    "test": "jest --config jest.config.js",
+    "test:integration": "cross-env NODE_ENV=test jest --config jest.integration.config.js --runInBand"
   },
   "keywords": [],
   "author": "",
