@@ -37,7 +37,8 @@ Esto dejará corriendo la base de datos InfluxDB y el panel de Grafana.
 Desde la raíz del proyecto:
 
 ```bash
-docker compose -f tests/performance/docker-compose.yml run --rm k6 run /scripts/stress-test.js
+docker compose -f tests/performance/docker-compose.yml up -d influxdb
+docker compose -f tests/performance/docker-compose.yml run --rm k6 run //scripts/stress-test.js
 ```
 
 Si necesitas cambiar la base URL, usa la variable de entorno `API_BASE_URL`:

@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "App web para la gestión y seguimiento de metas financieras personales",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
