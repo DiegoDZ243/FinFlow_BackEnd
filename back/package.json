@@ -4,7 +4,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test":"jest"
+    "test": "jest",
+    "test:integration": "cross-env NODE_ENV=test jest --runInBand --testPathPatterns=tests/integration"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,8 @@
     "sequelize": "^6.37.1"
   },
   "devDependencies": {
-    "jest": "^30.4.2"
+    "cross-env": "^7.0.3",
+    "jest": "^30.4.2",
+    "supertest": "^7.0.0"
   }
 }

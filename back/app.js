@@ -28,10 +28,14 @@ app.use('/api/ahorradores', authRouter);
 app.use('/api/metas', metasRouter);
 app.use('/api/aportes-metas', aportesMetasRouter);
 
-sequelize.sync({ force: false })
-    .then(() => console.log('Tablas sincronizadas correctamente'))
-    .catch(err => console.error('Error al sincronizar:', err));
+if (require.main === module) {
+    sequelize.sync({ force: false })
+        .then(() => console.log('Tablas sincronizadas correctamente'))
+        .catch(err => console.error('Error al sincronizar:', err));
 
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
+    app.listen(PORT, () => {
+        console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;
