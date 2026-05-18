@@ -24,6 +24,11 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // El proyecto usa Contexts que exportan hooks y providers en el mismo archivo.
+      'react-refresh/only-export-components': 'off',
+
+      // Permitimos hidratar estado desde props/storage en efectos (patron ya usado en el repo).
+      'react-hooks/set-state-in-effect': 'off',
     },
   },
 ])

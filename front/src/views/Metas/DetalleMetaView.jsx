@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useMeta } from '../../context/MetaContext';
 import BarraProgreso from '../../components/BarraProgreso';
+import HistorialAportes from './HistorialAportes';
+import EditarMetaModal from '../../components/EditarMetaModal';
 import './DetalleMetaView.css';
 
 const DetalleMetaView = () => {
@@ -10,6 +12,9 @@ const DetalleMetaView = () => {
     const { metaActual, progreso, fetchMetaPorId, fetchProgreso, aportarMeta, eliminarMeta, loading } = useMeta();
     const [showAportar, setShowAportar] = useState(false);
     const [aportacion, setAportacion] = useState({ montoAportado: '', tipo: 'unico', notas: '' });
+    const [showHistorial, setShowHistorial] = useState(false);
+    const [aportesReloadKey, setAportesReloadKey] = useState(0);
+    const [showEditarMeta, setShowEditarMeta] = useState(false);
 
     useEffect(() => {
         fetchMetaPorId(id);
@@ -42,6 +47,8 @@ const DetalleMetaView = () => {
             setShowAportar(false);
             setAportacion({ montoAportado: '', tipo: 'unico', notas: '' });
             fetchProgreso(id);
+            // Si el historial esta abierto, recargarlo automaticamente
+            setAportesReloadKey((k) => k + 1);
         }
     };
 
@@ -72,7 +79,15 @@ const DetalleMetaView = () => {
                 <Link to="/metas" className="btn-volver">← Volver a Metas</Link>
             </div>
 
-            <div className="detalle-card">
+            <div className={`detalle-split ${showHistorial ? 'open' : ''}`}>
+                <div className="detalle-card">
+                    <button
+                        type="button"
+                        className="btn-historial"
+                        onClick={() => setShowHistorial((v) => !v)}
+                    >
+                        {showHistorial ? 'Ocultar Historial' : 'Ver Historial'}
+                    </button>
                 <div className="detalle-titulo">
                     <h1>{metaActual.identificador}</h1>
                     {estaCompletada && <span className="badge-completada">Completada</span>}
@@ -159,8 +174,9 @@ const DetalleMetaView = () => {
                                 onChange={(e) => setAportacion(prev => ({...prev, tipo: e.target.value}))}
                             >
                                 <option value="unico">Único</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="quincenal">Quincenal</option>
                                 <option value="mensual">Mensual</option>
-                                <option value="extraordinario">Extraordinario</option>
                             </select>
                             <input
                                 type="text"
@@ -181,14 +197,38 @@ const DetalleMetaView = () => {
                 </div>
 
                 <div className="detalle-botones">
-                    <Link to={`/metas/${id}/editar`} className="btn-editar">
+                    <button type="button" onClick={() => setShowEditarMeta(true)} className="btn-editar">
                         Editar Meta
-                    </Link>
+                    </button>
                     <button onClick={handleEliminar} className="btn-eliminar">
                         Eliminar
                     </button>
                 </div>
+                </div>
+
+                {showHistorial && (
+                    <div className="detalle-side">
+                        <HistorialAportes
+                            metaClave={id}
+                            reloadSignal={aportesReloadKey}
+                            onChanged={async () => {
+                                await fetchMetaPorId(id);
+                                await fetchProgreso(id);
+                            }}
+                        />
+                    </div>
+                )}
             </div>
+
+            <EditarMetaModal
+                open={showEditarMeta}
+                meta={metaActual}
+                onClose={() => setShowEditarMeta(false)}
+                onSaved={async () => {
+                    await fetchMetaPorId(id);
+                    await fetchProgreso(id);
+                }}
+            />
         </div>
     );
 };

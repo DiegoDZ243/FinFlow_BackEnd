@@ -39,7 +39,11 @@ export const obtenerProgreso = async (id) => {
 };
 
 export const aportarMeta = async (id, data) => {
-    const { montoAportado } = data;
-    const response = await api.post(`/metas/${id}/aportar`, { monto: montoAportado }, config());
+    const { montoAportado, tipo } = data;
+    const response = await api.post(
+        `/metas/${id}/aportar`,
+        { monto: montoAportado, tipoAporte: tipo || 'unico' },
+        config()
+    );
     return response.data;
 };
