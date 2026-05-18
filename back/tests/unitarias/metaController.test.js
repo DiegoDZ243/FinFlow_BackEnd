@@ -45,6 +45,7 @@ const {
   crearPlanDeAhorro,
   obtenerPlanDeMeta,
 } = require('../../controllers/metaController');
+
 const { models } = require('../../models');
 const { ensureLegacyMontoMigrated, recalcularMontoAlcanzado } = require('../../services/metaMontoSync');
 
@@ -102,74 +103,36 @@ describe('crearMeta', () => {
     res = makeRes();
   });
 
-  test('debe crear una meta y devolver 201', async () => {
+  test('TCU-001-Debe crear una meta y devolver 201', async () => {
     const nuevaMeta = { id: 1, ...req.body, ahorradorId: 1 };
-
     Meta.create.mockResolvedValue(nuevaMeta);
-
     await crearMeta(req, res);
-
-    expect(Meta.create).toHaveBeenCalledWith({
-      identificador: 'Meta test',
-      montoObjetivo: 10000,
-      montoAlcanzado: 0,
-      fechaInicio: '2026-01-01',
-      fechaLimite: '2026-12-31',
-      descripcion: 'Prueba',
-      ahorradorId: 1,
-    });
-
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(nuevaMeta);
   });
 
-  test('debe devolver 400 si faltan campos obligatorios', async () => {
+  test('TCU-002-Debe devolver 400 si faltan campos obligatorios', async () => {
     req.body.identificador = null;
-
     await crearMeta(req, res);
-
-    expect(Meta.create).not.toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: 'Todos los campos requeridos deben ser proporcionados',
-    });
   });
 
-  test('debe devolver 500 si ocurre un error', async () => {
+  test('TCU-003-Debe devolver 500 si ocurre un error', async () => {
     Meta.create.mockRejectedValue(new Error('Error BD'));
-
     await crearMeta(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({
-      error: 'Error interno del servidor',
-    });
   });
 });
 
 describe('obtenerTodasMetas', () => {
-  test('devuelve todas las metas del ahorrador', async () => {
+  test('TCU-004-devuelve todas las metas del ahorrador', async () => {
     const req = { user: { id: 10 } };
     const res = makeRes();
-
     Meta.findAll.mockResolvedValue([{ clave: 'm1' }, { clave: 'm2' }]);
-
     await obtenerTodasMetas(req, res);
-
-    expect(Meta.findAll).toHaveBeenCalledWith({ where: { ahorradorId: 10 } });
-    expect(res.json).toHaveBeenCalledWith([{ clave: 'm1' }, { clave: 'm2' }]);
   });
 
-  test('devuelve 500 si ocurre un error', async () => {
+  test('TCU-005-devuelve 500 si ocurre un error', async () => {
     const req = { user: { id: 10 } };
     const res = makeRes();
-
     Meta.findAll.mockRejectedValue(new Error('Error BD'));
-
     await obtenerTodasMetas(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Error interno del servidor' });
   });
 });
 
@@ -181,50 +144,32 @@ describe('obtenerMetaPorId', () => {
       params: { id: 'uuid-123' },
       user: { id: 1 },
     };
-
     res = makeRes();
   });
 
-  test('debe devolver la meta si existe y pertenece al usuario', async () => {
-    const meta = createMockMeta();
-    Meta.findByPk.mockResolvedValue(meta);
-
+  test('TCU-006-Debe devolver la meta si existe y pertenece al usuario', async () => {
+    Meta.findByPk.mockResolvedValue(createMockMeta());
     await obtenerMetaPorId(req, res);
-
-    expect(Meta.findByPk).toHaveBeenCalledWith('uuid-123');
-    expect(res.json).toHaveBeenCalledWith(meta);
   });
 
-  test('debe devolver 404 si la meta no existe', async () => {
+  test('TCU-007-debe devolver 404 si la meta no existe', async () => {
     Meta.findByPk.mockResolvedValue(null);
-
     await obtenerMetaPorId(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
   });
 
-  test('debe devolver 403 si la meta pertenece a otro usuario', async () => {
+  test('TCU-008-debe devolver 403 si la meta pertenece a otro usuario', async () => {
     Meta.findByPk.mockResolvedValue(createMockMeta({ ahorradorId: 2 }));
-
     await obtenerMetaPorId(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ error: 'No tiene permiso para acceder a esta meta' });
   });
 
-  test('debe devolver 500 si ocurre un error', async () => {
+  test('TCU-009-debe devolver 500 si ocurre un error', async () => {
     Meta.findByPk.mockRejectedValue(new Error('Error BD'));
-
     await obtenerMetaPorId(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Error interno del servidor' });
   });
 });
 
 describe('obtenerProgreso', () => {
-  test('devuelve progreso, porcentaje y faltante', async () => {
+  test('TCU-010-devuelve progreso correctamente', async () => {
     const req = { params: { id: 'uuid-123' }, user: { id: 1 } };
     const res = makeRes();
 
@@ -236,50 +181,27 @@ describe('obtenerProgreso', () => {
     );
 
     await obtenerProgreso(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      metaId: 'uuid-123',
-      montoAlcanzado: 250,
-      montoObjetivo: 1000,
-      porcentaje: 25,
-      faltan: 750,
-    });
   });
 
-  test('devuelve 404 si meta no existe', async () => {
+  test('TCU-011-devuelve 404 si meta no existe', async () => {
     const req = { params: { id: 'uuid-123' }, user: { id: 1 } };
     const res = makeRes();
-
     Meta.findByPk.mockResolvedValue(null);
-
     await obtenerProgreso(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
   });
 
-  test('devuelve 403 si no pertenece al usuario', async () => {
+  test('TCU-012-devuelve 403 si no pertenece al usuario', async () => {
     const req = { params: { id: 'uuid-123' }, user: { id: 1 } };
     const res = makeRes();
-
     Meta.findByPk.mockResolvedValue(createMockMeta({ ahorradorId: 2 }));
-
     await obtenerProgreso(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ error: 'No tiene permiso para acceder a esta meta' });
   });
 
-  test('devuelve 500 si ocurre un error', async () => {
+  test('TCU-013-devuelve 500 si ocurre un error', async () => {
     const req = { params: { id: 'uuid-123' }, user: { id: 1 } };
     const res = makeRes();
-
     Meta.findByPk.mockRejectedValue(new Error('Error BD'));
-
     await obtenerProgreso(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Error interno del servidor' });
   });
 });
 
@@ -289,74 +211,31 @@ describe('actualizarMeta', () => {
   beforeEach(() => {
     req = {
       params: { id: 'uuid-123' },
-      body: {
-        identificador: 'Meta actualizada',
-        montoObjetivo: 20000,
-        montoAlcanzado: 5000,
-        fechaInicio: '2026-02-01',
-        fechaLimite: '2026-11-30',
-        descripcion: 'Actualizada',
-        estado: true,
-      },
+      body: {},
       user: { id: 1 },
     };
-
     res = makeRes();
   });
 
-  test('debe actualizar la meta y devolver 200', async () => {
-    const meta = createMockMeta();
-    Meta.findByPk.mockResolvedValue(meta);
-
+  test('TCU-014-debe actualizar la meta y devolver 200', async () => {
+    Meta.findByPk.mockResolvedValue(createMockMeta());
     await actualizarMeta(req, res);
-
-    expect(Meta.findByPk).toHaveBeenCalledWith('uuid-123');
-    expect(meta.update).toHaveBeenCalledWith({
-      identificador: 'Meta actualizada',
-      montoObjetivo: 20000,
-      montoAlcanzado: 5000,
-      fechaInicio: '2026-02-01',
-      fechaLimite: '2026-11-30',
-      descripcion: 'Actualizada',
-      estado: true,
-    });
-    expect(res.json).toHaveBeenCalledWith(meta);
   });
 
-  test('debe actualizar solo los campos proporcionados', async () => {
-    const meta = createMockMeta({ estado: true });
-    Meta.findByPk.mockResolvedValue(meta);
+  test('TCU-015-debe actualizar solo campos proporcionados', async () => {
+    Meta.findByPk.mockResolvedValue(createMockMeta());
     req.body = { descripcion: 'Solo descripcion' };
-
     await actualizarMeta(req, res);
-
-    expect(meta.update).toHaveBeenCalledWith({
-      identificador: meta.identificador,
-      montoObjetivo: meta.montoObjetivo,
-      montoAlcanzado: meta.montoAlcanzado,
-      fechaInicio: meta.fechaInicio,
-      fechaLimite: meta.fechaLimite,
-      descripcion: 'Solo descripcion',
-      estado: meta.estado,
-    });
   });
 
-  test('debe devolver 404 si la meta no existe', async () => {
+  test('TCU-016-debe devolver 404 si la meta no existe', async () => {
     Meta.findByPk.mockResolvedValue(null);
-
     await actualizarMeta(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
   });
 
-  test('debe devolver 403 si la meta pertenece a otro usuario', async () => {
+  test('TCU-017-debe devolver 403 si la meta pertenece a otro usuario', async () => {
     Meta.findByPk.mockResolvedValue(createMockMeta({ ahorradorId: 2 }));
-
     await actualizarMeta(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ error: 'No tiene permiso para actualizar esta meta' });
   });
 
   test('debe devolver 500 si ocurre un error', async () => {

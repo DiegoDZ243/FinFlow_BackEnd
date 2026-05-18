@@ -59,7 +59,7 @@ const getMockTransaction = () => sequelize.transaction.mock.results[0]?.value;
 
 describe('controllers/aporteMetaController', () => {
   describe('crearAporteMeta', () => {
-    test('400 si faltan metaClave o cantidad y hace rollback', async () => {
+    test('TCU-021 400 si faltan metaClave o cantidad y hace rollback', async () => {
       const req = { body: { metaClave: null, cantidad: null }, user: { id: 1 } };
       const res = makeRes();
 
@@ -72,7 +72,7 @@ describe('controllers/aporteMetaController', () => {
       expect(Meta.findByPk).not.toHaveBeenCalled();
     });
 
-    test('404 si meta no existe y hace rollback', async () => {
+    test('TCU-022 404 si meta no existe y hace rollback', async () => {
       Meta.findByPk.mockResolvedValue(null);
       const req = { body: { metaClave: 'm1', cantidad: 10 }, user: { id: 1 } };
       const res = makeRes();
@@ -86,7 +86,7 @@ describe('controllers/aporteMetaController', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
     });
 
-    test('403 si meta pertenece a otro usuario y hace rollback', async () => {
+    test('TCU-023 403 si meta pertenece a otro usuario y hace rollback', async () => {
       Meta.findByPk.mockResolvedValue({ clave: 'm1', ahorradorId: 2 });
       const req = { body: { metaClave: 'm1', cantidad: 10 }, user: { id: 1 } };
       const res = makeRes();
@@ -99,7 +99,7 @@ describe('controllers/aporteMetaController', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'No tiene permiso para aportar a esta meta' });
     });
 
-    test('201 crea aporte, recalcula y hace commit', async () => {
+    test('TCU-024 201 crea aporte, recalcula y hace commit', async () => {
       const meta = { clave: 'm1', ahorradorId: 1 };
       Meta.findByPk.mockResolvedValue(meta);
       AporteMeta.create.mockResolvedValue({ claveAporte: 1, metaClave: 'm1', cantidad: 10 });
@@ -129,7 +129,7 @@ describe('controllers/aporteMetaController', () => {
       expect(res.json).toHaveBeenCalledWith({ claveAporte: 1, metaClave: 'm1', cantidad: 10 });
     });
 
-    test('500 si ocurre error y hace rollback', async () => {
+    test('TCU-025 500 si ocurre error y hace rollback', async () => {
       Meta.findByPk.mockRejectedValue(new Error('Error BD'));
       const req = { body: { metaClave: 'm1', cantidad: 10 }, user: { id: 1 } };
       const res = makeRes();
@@ -144,7 +144,7 @@ describe('controllers/aporteMetaController', () => {
   });
 
   describe('actualizarAporteMeta', () => {
-    test('404 si aporte no existe y hace rollback', async () => {
+    test('TCU-026 404 si aporte no existe y hace rollback', async () => {
       AporteMeta.findByPk.mockResolvedValue(null);
       const req = { params: { id: '1' }, body: {}, user: { id: 1 } };
       const res = makeRes();
@@ -157,10 +157,11 @@ describe('controllers/aporteMetaController', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Aporte no encontrado' });
     });
 
-    test('403 si meta no pertenece al usuario y hace rollback', async () => {
+    test('TCU-027 403 si meta no pertenece al usuario y hace rollback', async () => {
       const aporte = { metaClave: 'm1', update: jest.fn() };
       AporteMeta.findByPk.mockResolvedValue(aporte);
       Meta.findByPk.mockResolvedValue({ clave: 'm1', ahorradorId: 2 });
+
       const req = { params: { id: '1' }, body: { cantidad: 5 }, user: { id: 1 } };
       const res = makeRes();
 
@@ -173,7 +174,7 @@ describe('controllers/aporteMetaController', () => {
       expect(aporte.update).not.toHaveBeenCalled();
     });
 
-    test('actualiza y hace commit', async () => {
+    test('TCU-028 actualiza y hace commit', async () => {
       const aporte = {
         metaClave: 'm1',
         cantidad: 10,
@@ -205,7 +206,7 @@ describe('controllers/aporteMetaController', () => {
   });
 
   describe('eliminarAporteMeta', () => {
-    test('404 si aporte no existe y hace rollback', async () => {
+    test('TCU-029 404 si aporte no existe y hace rollback', async () => {
       AporteMeta.findByPk.mockResolvedValue(null);
       const req = { params: { id: '1' }, user: { id: 1 } };
       const res = makeRes();
@@ -218,7 +219,7 @@ describe('controllers/aporteMetaController', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Aporte no encontrado' });
     });
 
-    test('elimina y hace commit', async () => {
+    test('TCU-030 elimina y hace commit', async () => {
       const aporte = { metaClave: 'm1', destroy: jest.fn().mockResolvedValue(undefined) };
       AporteMeta.findByPk.mockResolvedValue(aporte);
       Meta.findByPk.mockResolvedValue({ clave: 'm1', ahorradorId: 1 });
@@ -237,7 +238,7 @@ describe('controllers/aporteMetaController', () => {
   });
 
   describe('listarAportesDeMeta', () => {
-    test('404 si meta no existe', async () => {
+    test('TCU-031 404 si meta no existe', async () => {
       Meta.findByPk.mockResolvedValue(null);
       const req = { params: { metaClave: 'm1' }, user: { id: 1 } };
       const res = makeRes();
@@ -248,7 +249,7 @@ describe('controllers/aporteMetaController', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
     });
 
-    test('403 si meta no pertenece al usuario', async () => {
+    test('TCU-032 403 si meta no pertenece al usuario', async () => {
       Meta.findByPk.mockResolvedValue({ clave: 'm1', ahorradorId: 2 });
       const req = { params: { metaClave: 'm1' }, user: { id: 1 } };
       const res = makeRes();
@@ -260,7 +261,7 @@ describe('controllers/aporteMetaController', () => {
       expect(AporteMeta.findAll).not.toHaveBeenCalled();
     });
 
-    test('lista aportes con orden', async () => {
+    test('TCU-033 lista aportes con orden', async () => {
       Meta.findByPk.mockResolvedValue({ clave: 'm1', ahorradorId: 1 });
       AporteMeta.findAll.mockResolvedValue([{ claveAporte: 1 }]);
 
