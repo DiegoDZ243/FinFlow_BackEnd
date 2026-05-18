@@ -16,7 +16,7 @@ describe('middleware/auth verificarToken', () => {
     jest.clearAllMocks();
   });
 
-  test('401 si no hay header authorization', () => {
+  test('TCU-018-No enviar header authorization y ejecutar verificarToken()', () => {
     const req = { headers: {} };
     const res = makeRes();
     const next = jest.fn();
@@ -28,7 +28,7 @@ describe('middleware/auth verificarToken', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  test('401 si formato no es Bearer <token>', () => {
+  test('TCU-019-Enviar authorization con formato inválido y ejecutar verificarToken()', () => {
     const req = { headers: { authorization: 'Token abc' } };
     const res = makeRes();
     const next = jest.fn();
@@ -40,7 +40,7 @@ describe('middleware/auth verificarToken', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  test('401 si jwt.verify lanza error', () => {
+  test('TCU-020-jwt.verify lanza error y ejecutar verificarToken()', () => {
     jwt.verify.mockImplementation(() => {
       throw new Error('bad token');
     });
@@ -57,7 +57,7 @@ describe('middleware/auth verificarToken', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  test('setea req.user y llama next cuando token es valido', () => {
+  test('TCU-021-token válido asigna req.user y llama next()', () => {
     jwt.verify.mockReturnValue({ id: 1, email: 'a@b.com' });
 
     const req = { headers: { authorization: 'Bearer ok' } };
