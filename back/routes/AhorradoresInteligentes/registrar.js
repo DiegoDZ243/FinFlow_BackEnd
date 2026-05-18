@@ -32,6 +32,9 @@ const registrarAhorrador = async (req, res) => {
             }
         });
     } catch (error) {
+        if (error?.name === 'SequelizeValidationError') {
+            return res.status(400).json({ error: 'Datos inválidos' });
+        }
         console.error('Error en registro:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }

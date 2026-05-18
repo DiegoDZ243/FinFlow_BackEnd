@@ -1,0 +1,162 @@
+.historial {
+    background-color: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    border-radius: 12px;
+    padding: 1.25rem;
+    min-width: 380px;
+}
+
+.historial-hint {
+    margin-bottom: 0.85rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #2a2a4a;
+    background-color: rgba(255, 255, 255, 0.03);
+    color: #aaa;
+    font-size: 0.9rem;
+    line-height: 1.35;
+}
+
+.historial-hint strong {
+    color: #eaeaea;
+}
+
+.historial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.historial-header h3 {
+    margin: 0;
+    color: #eaeaea;
+    font-size: 1.05rem;
+}
+
+/* Formulario de crear aporte removido (solo lectura) */
+
+.historial-error {
+    color: #e94560;
+    background-color: rgba(233, 69, 96, 0.12);
+    border: 1px solid rgba(233, 69, 96, 0.35);
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.historial-empty {
+    color: #888;
+    padding: 0.75rem 0;
+}
+
+.historial-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-height: 520px;
+    overflow: auto;
+}
+
+/* Scrollbar dark coherente */
+.historial-list {
+    scrollbar-color: #6b6b7d #0f0f1a;
+    scrollbar-width: thin;
+}
+
+.historial-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.historial-list::-webkit-scrollbar-track {
+    background: #0f0f1a;
+    border-radius: 12px;
+}
+
+.historial-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6b6b7d, #3a3a5a);
+    border-radius: 12px;
+    border: 2px solid #0f0f1a;
+}
+
+.historial-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #7a7a8c, #4a4a6a);
+}
+
+.historial-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background-color: #0f0f1a;
+    border: 1px solid #2a2a4a;
+    border-radius: 10px;
+    padding: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.item-cantidad {
+    color: #eaeaea;
+    font-weight: 700;
+}
+
+.item-fecha {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.item-meta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid #2a2a4a;
+    color: #eaeaea;
+    font-size: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.item-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+/* Edicion inline removida: ahora se edita en modal */
+
+@media (max-width: 900px) {
+    .historial {
+        min-width: auto;
+    }
+}
+
+/* Edicion inline removida */
+
+@media (min-width: 901px) {
+    .historial-item {
+        flex-wrap: nowrap;
+    }
+    .item-actions {
+        flex-wrap: nowrap;
+    }
+}
+
+/* Modales se estilizan desde components/Modal.css */

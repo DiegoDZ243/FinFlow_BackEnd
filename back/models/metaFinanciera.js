@@ -12,7 +12,7 @@ const MetaFinanciera=sequelize.define("metasFinancieras",{
         type: DataTypes.STRING,
         allowNull: false,
         validate:{
-            len:[4,15]
+            len:[4,30]
         }
     },
     fechaInicio:{

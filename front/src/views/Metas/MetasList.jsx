@@ -5,7 +5,7 @@ import CardMeta from '../../components/CardMeta';
 import './MetasList.css';
 
 const MetasList = () => {
-    const { metas, loading, error, fetchMetas, clearError } = useMeta();
+    const { metas, loading, error, fetchMetas } = useMeta();
 
     useEffect(() => {
         fetchMetas();
