@@ -33,7 +33,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('crearMeta', () => {
+describe('Crear Meta', () => {
   let req, res;
 
   beforeEach(() => {
@@ -55,7 +55,7 @@ describe('crearMeta', () => {
     };
   });
 
-  test('debe crear una meta y devolver 201', async () => {
+  test('TCU-001-Debe crear una meta y devolver 201', async () => {
     const nuevaMeta = { id: 1, ...req.body, ahorradorId: 1 };
 
     Meta.create.mockResolvedValue(nuevaMeta);
@@ -76,7 +76,7 @@ describe('crearMeta', () => {
     expect(res.json).toHaveBeenCalledWith(nuevaMeta);
   });
 
-  test('debe devolver 400 si faltan campos obligatorios', async () => {
+  test('TCU-002-Debe devolver 400 si faltan campos obligatorios', async () => {
     req.body.identificador = null;
 
     await crearMeta(req, res);
@@ -88,7 +88,7 @@ describe('crearMeta', () => {
     });
   });
 
-  test('debe devolver 500 si ocurre un error', async () => {
+  test('TCU-003-Debe devolver 500 si ocurre un error', async () => {
     Meta.create.mockRejectedValue(new Error('Error BD'));
 
     await crearMeta(req, res);
@@ -100,7 +100,7 @@ describe('crearMeta', () => {
   });
 });
 
-describe('obtenerMetaPorId', () => {
+describe('TCU-004-ObtenerMetaPorId', () => {
   let req, res;
 
   beforeEach(() => {
@@ -115,7 +115,7 @@ describe('obtenerMetaPorId', () => {
     };
   });
 
-  test('debe devolver la meta si existe y pertenece al usuario', async () => {
+  test('TCU-005-Debe devolver la meta si existe y pertenece al usuario', async () => {
     const meta = createMockMeta();
     Meta.findByPk.mockResolvedValue(meta);
 
@@ -125,7 +125,7 @@ describe('obtenerMetaPorId', () => {
     expect(res.json).toHaveBeenCalledWith(meta);
   });
 
-  test('debe devolver 404 si la meta no existe', async () => {
+  test('TCU-006-Debe devolver 404 si la meta no existe', async () => {
     Meta.findByPk.mockResolvedValue(null);
 
     await obtenerMetaPorId(req, res);
@@ -134,7 +134,7 @@ describe('obtenerMetaPorId', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
   });
 
-  test('debe devolver 403 si la meta pertenece a otro usuario', async () => {
+  test('TCU-007-Debe devolver 403 si la meta pertenece a otro usuario', async () => {
     Meta.findByPk.mockResolvedValue(createMockMeta({ ahorradorId: 2 }));
 
     await obtenerMetaPorId(req, res);
@@ -143,7 +143,7 @@ describe('obtenerMetaPorId', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'No tiene permiso para acceder a esta meta' });
   });
 
-  test('debe devolver 500 si ocurre un error', async () => {
+  test('TCU-008-Debe devolver 500 si ocurre un error', async () => {
     Meta.findByPk.mockRejectedValue(new Error('Error BD'));
 
     await obtenerMetaPorId(req, res);
@@ -153,7 +153,7 @@ describe('obtenerMetaPorId', () => {
   });
 });
 
-describe('actualizarMeta', () => {
+describe('TCU-010-actualizarMeta', () => {
   let req, res;
 
   beforeEach(() => {
@@ -177,7 +177,7 @@ describe('actualizarMeta', () => {
     };
   });
 
-  test('debe actualizar la meta y devolver 200', async () => {
+  test('TCU-011-Debe actualizar la meta y devolver 200', async () => {
     const meta = createMockMeta();
     Meta.findByPk.mockResolvedValue(meta);
 
@@ -196,7 +196,7 @@ describe('actualizarMeta', () => {
     expect(res.json).toHaveBeenCalledWith(meta);
   });
 
-  test('debe actualizar solo los campos proporcionados', async () => {
+  test('TCU-012-Debe actualizar solo los campos proporcionados', async () => {
     const meta = createMockMeta({ estado: true });
     Meta.findByPk.mockResolvedValue(meta);
     req.body = { descripcion: 'Solo descripcion' };
@@ -214,7 +214,7 @@ describe('actualizarMeta', () => {
     });
   });
 
-  test('debe devolver 404 si la meta no existe', async () => {
+  test('TCU-013-Debe devolver 404 si la meta no existe', async () => {
     Meta.findByPk.mockResolvedValue(null);
 
     await actualizarMeta(req, res);
@@ -223,7 +223,7 @@ describe('actualizarMeta', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
   });
 
-  test('debe devolver 403 si la meta pertenece a otro usuario', async () => {
+  test('TCU-014-Debe devolver 403 si la meta pertenece a otro usuario', async () => {
     Meta.findByPk.mockResolvedValue(createMockMeta({ ahorradorId: 2 }));
 
     await actualizarMeta(req, res);
@@ -232,7 +232,7 @@ describe('actualizarMeta', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'No tiene permiso para actualizar esta meta' });
   });
 
-  test('debe devolver 500 si ocurre un error', async () => {
+  test('TCU-015-Debe devolver 500 si ocurre un error', async () => {
     Meta.findByPk.mockRejectedValue(new Error('Error BD'));
 
     await actualizarMeta(req, res);
@@ -242,7 +242,7 @@ describe('actualizarMeta', () => {
   });
 });
 
-describe('eliminarMeta', () => {
+describe('Eliminar Meta', () => {
   let req, res;
 
   beforeEach(() => {
@@ -257,7 +257,7 @@ describe('eliminarMeta', () => {
     };
   });
 
-  test('debe eliminar la meta y devolver 200', async () => {
+  test('TCU-017-Debe eliminar la meta y devolver 200', async () => {
     const meta = createMockMeta();
     Meta.findByPk.mockResolvedValue(meta);
 
@@ -268,7 +268,7 @@ describe('eliminarMeta', () => {
     expect(res.json).toHaveBeenCalledWith({ message: 'Meta eliminada correctamente' });
   });
 
-  test('debe devolver 404 si la meta no existe', async () => {
+  test('TCU-018-debe devolver 404 si la meta no existe', async () => {
     Meta.findByPk.mockResolvedValue(null);
 
     await eliminarMeta(req, res);
@@ -277,7 +277,7 @@ describe('eliminarMeta', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Meta no encontrada' });
   });
 
-  test('debe devolver 403 si la meta pertenece a otro usuario', async () => {
+  test('TCU-019-Debe devolver 403 si la meta pertenece a otro usuario', async () => {
     Meta.findByPk.mockResolvedValue(createMockMeta({ ahorradorId: 2 }));
 
     await eliminarMeta(req, res);
@@ -286,7 +286,7 @@ describe('eliminarMeta', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'No tiene permiso para eliminar esta meta' });
   });
 
-  test('debe devolver 500 si ocurre un error', async () => {
+  test('TCU-020-debe devolver 500 si ocurre un error', async () => {
     Meta.findByPk.mockRejectedValue(new Error('Error BD'));
 
     await eliminarMeta(req, res);

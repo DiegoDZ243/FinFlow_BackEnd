@@ -26,7 +26,7 @@ test.afterEach(async () => {
     }
 });
 
-test('Prueba crear un nueva meta con datos validos', async ({ page }) => {
+test('TC-META-001/Prueba crear un nueva meta con datos validos', async ({ page }) => {
     await test.step("Usuario ingresar sus credenciales e iniciar sesion", async () => {
         await page.goto('http://localhost:5173/login');
         await page.fill('input[name="email"]', 'c@mail.com');
@@ -44,7 +44,7 @@ test('Prueba crear un nueva meta con datos validos', async ({ page }) => {
     });
 
     await test.step("Llenar formulario y crear meta", async () => {
-        nombreMeta = `Test-${Date.now()}`;
+        nombreMeta = `Vacaciones a la playa 2030`;
         
         await page.fill('input[name="identificador"]', nombreMeta);
         await page.fill('input[name="montoObjetivo"]', '5000');
@@ -64,7 +64,7 @@ test('Prueba crear un nueva meta con datos validos', async ({ page }) => {
 });
 
 
-test('Prueba crear un nueva meta con identificador con mas de 30 caracteres', async ({ page }) => {
+test('TC-META-002/Prueba crear un nueva meta con identificador con mas de 30 caracteres', async ({ page }) => {
     await test.step("Usuario ingresar sus credenciales e iniciar sesion", async () => {
         await page.goto('http://localhost:5173/login');
         await page.fill('input[name="email"]', 'c@mail.com');
@@ -99,7 +99,7 @@ test('Prueba crear un nueva meta con identificador con mas de 30 caracteres', as
     });
 });
 
-test('Prueba crear un nueva meta con identificador con menos de 4 caracteres', async ({ page }) => {
+test('TC-META-003/Prueba crear un nueva meta con identificador con menos de 4 caracteres', async ({ page }) => {
     await test.step("Usuario ingresar sus credenciales e iniciar sesion", async () => {
         await page.goto('http://localhost:5173/login');
         await page.fill('input[name="email"]', 'c@mail.com');
@@ -134,7 +134,7 @@ test('Prueba crear un nueva meta con identificador con menos de 4 caracteres', a
     });
 });
 
-test('Prueba crear un nueva meta con monto menor o igual a 0', async ({ page }) => {
+test('TC-META-004/Prueba crear un nueva meta con monto menor o igual a 0', async ({ page }) => {
     await test.step("Usuario ingresar sus credenciales e iniciar sesion", async () => {
         await page.goto('http://localhost:5173/login');
         await page.fill('input[name="email"]', 'c@mail.com');
@@ -152,7 +152,7 @@ test('Prueba crear un nueva meta con monto menor o igual a 0', async ({ page }) 
     });
 
     await test.step("Llenar formulario y crear meta", async () => {
-        nombreMeta = `Test-${Date.now()}`;;
+        nombreMeta = 'Mis vacaciones';
         
         await page.fill('input[name="identificador"]', nombreMeta);
         await page.fill('input[name="montoObjetivo"]', '-1');
@@ -169,7 +169,7 @@ test('Prueba crear un nueva meta con monto menor o igual a 0', async ({ page }) 
     });
 });
 
-test('Prueba crear un nueva meta fecha anterior a la de hoy', async ({ page }) => {
+test('TC-META-005/Prueba crear un nueva meta fecha anterior a la de hoy', async ({ page }) => {
     await test.step("Usuario ingresar sus credenciales e iniciar sesion", async () => {
         await page.goto('http://localhost:5173/login');
         await page.fill('input[name="email"]', 'c@mail.com');
@@ -187,7 +187,7 @@ test('Prueba crear un nueva meta fecha anterior a la de hoy', async ({ page }) =
     });
 
     await test.step("Llenar formulario y crear meta", async () => {
-        nombreMeta = `Test-${Date.now()}`;;
+        nombreMeta = 'Más vacaciones';
         
         await page.fill('input[name="identificador"]', nombreMeta);
         await page.fill('input[name="montoObjetivo"]', '5000');
@@ -200,6 +200,43 @@ test('Prueba crear un nueva meta fecha anterior a la de hoy', async ({ page }) =
     await test.step("Verificar error de identificador", async () => {
         await expect(
             page.locator('div.form-error', { hasText: 'La fecha límite debe ser al menos un día posterior a la fecha de creación' })
+        ).toBeVisible();
+    });
+});
+
+test('TC-META-006/Prueba crear un nueva meta sin descripción', async ({ page }) => {
+    await test.step("Usuario ingresar sus credenciales e iniciar sesion", async () => {
+        await page.goto('http://localhost:5173/login');
+        await page.fill('input[name="email"]', 'c@mail.com');
+        await page.fill('input[name="password"]', '1234');
+    });
+
+    await test.step("Usuario inicia sesion", async () => {
+        await page.click('button[type="submit"]');
+        await page.waitForURL(/metas/);
+    });
+
+    await test.step("Navegar a crear meta", async () => {
+        await page.goto('http://localhost:5173/metas/nueva');
+        await expect(page.locator('h1')).toHaveText('Crear Nueva Meta');
+    });
+
+    await test.step("Llenar formulario y crear meta", async () => {
+        nombreMeta = 'Mis vacaciones 2030';
+        
+        await page.fill('input[name="identificador"]', nombreMeta);
+        await page.fill('input[name="montoObjetivo"]', '5000');
+        await page.fill('input[name="fechaLimite"]', '2026-12-31');
+        await page.fill('textarea[name="descripcion"]', '');
+
+        await page.click('button[type="submit"]');
+    });
+
+    await test.step("Verificar error de identificador", async () => {
+        await page.waitForURL(/\/metas/);
+        console.log(nombreMeta);
+        await expect(
+            page.locator('h3.card-meta-nombre', { hasText: nombreMeta })
         ).toBeVisible();
     });
 });
