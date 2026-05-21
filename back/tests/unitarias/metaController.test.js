@@ -10,6 +10,7 @@ jest.mock('../../models', () => {
         create: jest.fn(),
         findByPk: jest.fn(),
         findAll: jest.fn(),
+        findOne: jest.fn(),
         update: jest.fn(),
       },
       PlanDeAhorro: {
@@ -114,7 +115,15 @@ describe('crearMeta', () => {
     await crearMeta(req, res);
   });
 
-  test('TCU-003-Debe devolver 500 si ocurre un error', async () => {
+  test('TCU-003-Debe devolver 400 si ya existe una meta con el mismo identificador', async () => {
+    Meta.findOne.mockResolvedValue(createMockMeta());
+    await crearMeta(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Ya existe una meta con ese nombre. Elige otro identificador.' });
+  });
+
+  test('TCU-004-Debe devolver 500 si ocurre un error', async () => {
+    Meta.findOne.mockResolvedValue(null);
     Meta.create.mockRejectedValue(new Error('Error BD'));
     await crearMeta(req, res);
   });
@@ -236,6 +245,18 @@ describe('actualizarMeta', () => {
   test('TCU-017-debe devolver 403 si la meta pertenece a otro usuario', async () => {
     Meta.findByPk.mockResolvedValue(createMockMeta({ ahorradorId: 2 }));
     await actualizarMeta(req, res);
+  });
+
+  test('TCU-018-debe devolver 400 si se intenta actualizar con un identificador duplicado', async () => {
+    const meta = createMockMeta();
+    Meta.findByPk.mockResolvedValue(meta);
+    Meta.findOne.mockResolvedValue(createMockMeta({ clave: 'uuid-456', identificador: 'Meta nuevo' }));
+
+    req.body = { identificador: 'Meta nuevo' };
+    await actualizarMeta(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Ya existe una meta con ese nombre. Elige otro identificador.' });
   });
 
   test('debe devolver 500 si ocurre un error', async () => {

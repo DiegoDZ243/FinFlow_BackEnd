@@ -1,7 +1,11 @@
 .navbar {
-    background-color: #1a1a2e;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    background: rgba(26, 26, 46, 0.96);
+    backdrop-filter: blur(16px);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 50;
 }
 
 .navbar-container {
@@ -10,31 +14,85 @@
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
-.navbar-logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #16c79a;
-    text-decoration: none;
-}
-
-.navbar-menu {
+.navbar-search {
     display: flex;
-    list-style: none;
-    gap: 2rem;
-    margin: 0;
-    padding: 0;
+    flex-direction: column;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.55rem 0.85rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    min-width: 280px;
+    max-width: 520px;
+    flex: 1 1 320px;
 }
 
-.navbar-link {
+.navbar-search-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.navbar-search input {
+    flex: 1;
+    border: none;
+    background: transparent;
     color: #eaeaea;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s;
+    font-size: 0.95rem;
+    outline: none;
+    padding: 0.4rem 0;
 }
 
-.navbar-link:hover {
+.navbar-search input::placeholder {
+    color: #8f98ac;
+}
+
+.navbar-search-icon {
+    width: 1rem;
+    height: 1rem;
+    color: #16c79a;
+}
+
+.navbar-search-btn {
+    background: #16c79a;
+    color: #0f0f1a;
+    border: none;
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.navbar-search-btn:hover {
+    background: #20d39a;
+    transform: translateY(-1px);
+}
+
+.navbar-search-message {
+    color: #cfd6e6;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-left: 0.1rem;
+}
+
+.user-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.user-icon {
+    width: 1rem;
+    height: 1rem;
     color: #16c79a;
 }
 
@@ -42,24 +100,84 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.user-email {
+    color: #eaeaea;
+    font-size: 0.95rem;
+}
+
+.btn-logout {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #16c79a;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+}
+
+.navbar-menu {
+    display: flex;
+    list-style: none;
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.navbar-link {
+    color: #eaeaea;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.25s ease;
+}
+
+.navbar-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background: #16c79a;
+    border-radius: 99px;
+    transition: width 0.25s ease;
+}
+
+.navbar-link:hover {
+    color: #16c79a;
+}
+
+.navbar-link:hover::after,
+.navbar-link.active::after {
+    width: 100%;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .user-email {
     color: #888;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .btn-logout {
     background-color: #e94560;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s;
+    font-weight: 600;
+    transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
 .btn-logout:hover {
     background-color: #c7334d;
+    transform: translateY(-1px);
 }

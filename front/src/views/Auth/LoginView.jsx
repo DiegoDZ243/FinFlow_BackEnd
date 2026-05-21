@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Icon from '../../components/Icon';
 import './LoginView.css';
 
 const LoginView = () => {
@@ -59,9 +60,14 @@ const LoginView = () => {
     return (
         <div className="login-container">
             <div className="login-card">
-                <div className="login-logo">FinFlow</div>
+                <div className="login-logo">
+                    <Icon name="shield" className="login-logo-icon" />
+                    <span>FinFlow</span>
+                </div>
                 <h2>{isRegister ? 'Crear Cuenta' : 'Bienvenido'}</h2>
-                
+                <p className="login-subtitle">
+                    {isRegister ? 'Crea tu cuenta para empezar a planificar tus metas financieras.' : 'Ingresa para ver tus metas y avanzar con más control financiero.'}
+                </p>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="email">Correo electrónico</label>

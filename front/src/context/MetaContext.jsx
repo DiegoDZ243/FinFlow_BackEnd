@@ -21,6 +21,8 @@ export const useMeta = () => {
 
 export const MetaProvider = ({ children }) => {
     const [metas, setMetas] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
     const [metaActual, setMetaActual] = useState(null);
     const [progreso, setProgreso] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -32,8 +34,10 @@ export const MetaProvider = ({ children }) => {
         try {
             const data = await obtenerMetas();
             setMetas(data);
+            return data;
         } catch (err) {
             setError(err.response?.data?.error || 'Error al cargar las metas');
+            return [];
         } finally {
             setLoading(false);
         }
@@ -135,12 +139,44 @@ export const MetaProvider = ({ children }) => {
         }
     }, [fetchMetaPorId]);
 
+    const searchMetas = useCallback(async (query) => {
+        const trimmedQuery = query.trim();
+        if (!trimmedQuery) {
+            setSearchQuery('');
+            setSearchResults([]);
+            return [];
+        }
+
+        let metasParaBuscar = metas;
+        if (metasParaBuscar.length === 0) {
+            metasParaBuscar = await fetchMetas();
+        }
+
+        const normalizedQuery = trimmedQuery.toLowerCase();
+        const resultados = metasParaBuscar.filter((meta) => {
+            const identificador = meta.identificador?.toLowerCase() || '';
+            const descripcion = meta.descripcion?.toLowerCase() || '';
+            return identificador.includes(normalizedQuery) || descripcion.includes(normalizedQuery);
+        });
+
+        setSearchQuery(trimmedQuery);
+        setSearchResults(resultados);
+        return resultados;
+    }, [metas, fetchMetas]);
+
+    const clearSearch = useCallback(() => {
+        setSearchQuery('');
+        setSearchResults([]);
+    }, []);
+
     const clearError = useCallback(() => {
         setError(null);
     }, []);
 
     const value = {
         metas,
+        searchQuery,
+        searchResults,
         metaActual,
         progreso,
         loading,
@@ -152,6 +188,8 @@ export const MetaProvider = ({ children }) => {
         actualizarMeta: actualizarMetaExistente,
         eliminarMeta: eliminarMetaExistente,
         aportarMeta: aportarAMeta,
+        searchMetas,
+        clearSearch,
         clearError
     };
 
