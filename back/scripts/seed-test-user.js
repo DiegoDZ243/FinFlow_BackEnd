@@ -1,14 +1,15 @@
 require('dotenv').config();
 
 const bcrypt = require('bcryptjs');
-const { sequelize, models } = require('../models');
+const sequelize = require('../config/db');
+const AhorradorInteligente = require('../models/ahorradorInteligente');
 
 async function seedTestUser() {
   await sequelize.sync({ force: false });
 
   const passwordHash = await bcrypt.hash('1234', 10);
 
-  await models.ahorradoresInteligentes.findOrCreate({
+  await AhorradorInteligente.findOrCreate({
     where: { email: 'c@mail.com' },
     defaults: {
       email: 'c@mail.com',
@@ -17,7 +18,6 @@ async function seedTestUser() {
   });
 
   await sequelize.close();
-
   console.log('Usuario de prueba creado correctamente');
 }
 
