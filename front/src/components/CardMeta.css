@@ -1,14 +1,16 @@
 .card-meta {
-    background-color: #1a1a2e;
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid #2a2a4a;
-    transition: transform 0.2s, box-shadow 0.2s;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 0.98), rgba(18, 20, 38, 0.95));
+    border-radius: 24px;
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
 }
 
 .card-meta:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transform: translateY(-6px);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.3);
+    border-color: rgba(22, 199, 154, 0.15);
 }
 
 .card-meta.completada {
@@ -19,7 +21,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
+}
+
+.card-meta-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-meta-title-icon,
+.meta-info-icon,
+.btn-icon {
+    width: 1rem;
+    height: 1rem;
+    display: inline-flex;
+}
+
+.card-meta-title-icon {
+    color: #16c79a;
+}
+
+.meta-info-icon {
+    margin-right: 0.45rem;
+    color: #6d7b9c;
 }
 
 .card-meta-nombre {
@@ -31,17 +56,17 @@
 .badge-completada {
     background-color: #16c79a;
     color: #0f0f1a;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
     font-size: 0.75rem;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .card-meta-descripcion {
-    color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    line-height: 1.4;
+    color: #a3accf;
+    font-size: 0.95rem;
+    margin-bottom: 1.1rem;
+    line-height: 1.6;
 }
 
 .card-meta-progreso {
@@ -55,11 +80,11 @@
 .card-meta-fecha {
     display: flex;
     justify-content: space-between;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 .card-meta-fecha .label {
-    color: #666;
+    color: #7b84a0;
 }
 
 .card-meta-fecha .valor {
@@ -73,43 +98,41 @@
 .card-meta-acciones {
     display: flex;
     gap: 0.75rem;
-    margin-top: 1rem;
+    margin-top: 1.2rem;
 }
 
-.card-meta-acciones a {
-    flex: 1;
-    text-align: center;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
+.card-meta-acciones a,
 .card-meta-acciones button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     flex: 1;
     text-align: center;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: background-color 0.2s;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    font-weight: 600;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    border: 1px solid transparent;
 }
 
 .btn-ver {
     background-color: #16c79a;
     color: #0f0f1a;
+    box-shadow: 0 12px 28px rgba(22, 199, 154, 0.18);
 }
 
 .btn-ver:hover {
-    color: #3a3a5a;
+    background-color: #20d39a;
+    color: #0f0f1a;
 }
 
 .btn-editar {
-    background-color: #2a2a4a;
+    background-color: rgba(255, 255, 255, 0.05);
     color: #eaeaea;
-    border: 1px solid #3a3a5a;
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .btn-editar:hover {
-    background-color: #3a3a5a;
+    background-color: rgba(255, 255, 255, 0.12);
 }

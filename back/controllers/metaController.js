@@ -1,6 +1,7 @@
 const { models, sequelize } = require('../models');
 const { ensureLegacyMontoMigrated, recalcularMontoAlcanzado } = require('../services/metaMontoSync');
 const { Meta, PlanDeAhorro, Ahorrador, AporteMeta } = models;
+const MAX_OBJECTIVE = 99999999.99;
 
 const crearMeta = async (req, res) => {
     try {
@@ -9,6 +10,15 @@ const crearMeta = async (req, res) => {
 
         if (!identificador || !montoObjetivo || !fechaInicio || !fechaLimite) {
             return res.status(400).json({ error: 'Todos los campos requeridos deben ser proporcionados' });
+        }
+
+        if (parseFloat(montoObjetivo) > MAX_OBJECTIVE) {
+            return res.status(400).json({ error: `El monto objetivo no puede ser mayor a ${MAX_OBJECTIVE.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` });
+        }
+
+        const metaExistente = await Meta.findOne({ where: { ahorradorId, identificador } });
+        if (metaExistente) {
+            return res.status(400).json({ error: 'Ya existe una meta con ese nombre. Elige otro identificador.' });
         }
 
         const nuevaMeta = await Meta.create({
@@ -74,6 +84,17 @@ const actualizarMeta = async (req, res) => {
 
         if (meta.ahorradorId !== ahorradorId) {
             return res.status(403).json({ error: 'No tiene permiso para actualizar esta meta' });
+        }
+
+        if (montoObjetivo !== undefined && parseFloat(montoObjetivo) > MAX_OBJECTIVE) {
+            return res.status(400).json({ error: `El monto objetivo no puede ser mayor a ${MAX_OBJECTIVE.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` });
+        }
+
+        if (identificador && identificador !== meta.identificador) {
+            const metaDuplicada = await Meta.findOne({ where: { ahorradorId, identificador } });
+            if (metaDuplicada) {
+                return res.status(400).json({ error: 'Ya existe una meta con ese nombre. Elige otro identificador.' });
+            }
         }
 
         await meta.update({

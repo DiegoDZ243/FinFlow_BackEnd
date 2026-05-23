@@ -51,15 +51,20 @@ test('Prueba crear un nueva meta con datos validos', async ({ page }) => {
         await page.fill('input[name="fechaLimite"]', '2026-12-31');
         await page.fill('textarea[name="descripcion"]', 'Meta creada en prueba automatizada');
 
-        await page.click('button[type="submit"]');
+        await page.getByRole('button', { name: 'Crear Meta' }).click();
     });
 
     await test.step("Verificar redireccion y meta visible", async () => {
         await page.waitForURL(/\/metas/);
-        console.log(nombreMeta);
-        await expect(
-            page.locator('h3.card-meta-nombre', { hasText: nombreMeta })
-        ).toBeVisible();
+
+        const metaCreada = page.locator(
+            'h3.card-meta-nombre',
+            { hasText: nombreMeta }
+        );
+
+        await metaCreada.waitFor({ state: 'visible', timeout: 10000 });
+
+        await expect(metaCreada).toBeVisible();
     });
 });
 
@@ -89,7 +94,7 @@ test('Prueba crear un nueva meta con identificador con mas de 30 caracteres', as
         await page.fill('input[name="fechaLimite"]', '2026-12-31');
         await page.fill('textarea[name="descripcion"]', 'Meta creada en prueba automatizada');
 
-        await page.click('button[type="submit"]');
+        await page.getByRole('button', { name: 'Crear Meta' }).click();
     });
 
     await test.step("Verificar error de identificador", async () => {
@@ -124,7 +129,7 @@ test('Prueba crear un nueva meta con identificador con menos de 4 caracteres', a
         await page.fill('input[name="fechaLimite"]', '2026-12-31');
         await page.fill('textarea[name="descripcion"]', 'Meta creada en prueba automatizada');
 
-        await page.click('button[type="submit"]');
+        await page.getByRole('button', { name: 'Crear Meta' }).click();
     });
 
     await test.step("Verificar error de identificador", async () => {
@@ -159,7 +164,7 @@ test('Prueba crear un nueva meta con monto menor o igual a 0', async ({ page }) 
         await page.fill('input[name="fechaLimite"]', '2026-12-31');
         await page.fill('textarea[name="descripcion"]', 'Meta creada en prueba automatizada');
 
-        await page.click('button[type="submit"]');
+        await page.getByRole('button', { name: 'Crear Meta' }).click();
     });
 
     await test.step("Verificar error de monto", async () => {
@@ -194,7 +199,7 @@ test('Prueba crear un nueva meta fecha anterior a la de hoy', async ({ page }) =
         await page.fill('input[name="fechaLimite"]', '1999-12-31');
         await page.fill('textarea[name="descripcion"]', 'Meta creada en prueba automatizada');
 
-        await page.click('button[type="submit"]');
+        await page.getByRole('button', { name: 'Crear Meta' }).click();
     });
 
     await test.step("Verificar error de identificador", async () => {

@@ -3,10 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useMeta } from '../../context/MetaContext';
 import './FormMeta.css';
 
+const MAX_OBJECTIVE = 99999999.99;
+
 const EditarMetaView = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { metaActual, fetchMetaPorId, actualizarMeta, loading, error } = useMeta();
+    const { metas, metaActual, fetchMetas, fetchMetaPorId, actualizarMeta, loading, error } = useMeta();
 
     const [formData, setFormData] = useState({
         identificador: '',
@@ -58,6 +60,10 @@ const EditarMetaView = () => {
             setLocalError('El monto objetivo debe ser mayor a 0');
             return;
         }
+        if (parseFloat(formData.montoObjetivo) > MAX_OBJECTIVE) {
+            setLocalError(`El monto objetivo no puede ser mayor a ${MAX_OBJECTIVE.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+            return;
+        }
         if (!formData.fechaLimite) {
             setLocalError('La fecha límite es obligatoria');
             return;
@@ -67,6 +73,19 @@ const EditarMetaView = () => {
         const fechaLimite = new Date(formData.fechaLimite + 'T00:00:00');
         if (fechaLimite <= hoy) {
             setLocalError('La fecha límite debe ser al menos un día posterior a la fecha de creación');
+            return;
+        }
+
+        const metasDisponibles = metas.length ? metas : await fetchMetas();
+        const nombreNormalizado = formData.identificador.trim().toLowerCase();
+        const existeDuplicado = metasDisponibles.some(
+            (meta) =>
+                meta.clave !== id &&
+                meta.identificador?.trim().toLowerCase() === nombreNormalizado
+        );
+
+        if (existeDuplicado) {
+            setLocalError('Ya existe una meta con ese nombre. Elige otro identificador.');
             return;
         }
 
@@ -110,6 +129,10 @@ const EditarMetaView = () => {
                         value={formData.montoObjetivo}
                         onChange={handleChange}
                         step="0.01"
+                        min="0.01"
+                        max={MAX_OBJECTIVE}
+                        className={formData.montoObjetivo && parseFloat(formData.montoObjetivo) > MAX_OBJECTIVE ? 'invalid' : ''}
+                        aria-invalid={formData.montoObjetivo && parseFloat(formData.montoObjetivo) > MAX_OBJECTIVE}
                     />
                 </div>
 

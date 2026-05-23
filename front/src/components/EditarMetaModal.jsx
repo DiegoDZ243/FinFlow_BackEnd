@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useMeta } from '../context/MetaContext';
 import './Modal.css';
 
+const MAX_OBJECTIVE = 99999999.99;
+
 const EditarMetaModal = ({ open, meta, onClose, onSaved }) => {
     const { actualizarMeta, loading } = useMeta();
     const [error, setError] = useState(null);
@@ -33,6 +35,28 @@ const EditarMetaModal = ({ open, meta, onClose, onSaved }) => {
     const handleSave = async () => {
         if (!meta?.clave) return;
         setError(null);
+
+        if (!formData.identificador || formData.identificador.length < 4) {
+            setError('El nombre debe tener al menos 4 caracteres');
+            return;
+        }
+        if (formData.identificador.length > 30) {
+            setError('El nombre de la meta no puede exceder los 30 caracteres');
+            return;
+        }
+        if (!formData.montoObjetivo || parseFloat(formData.montoObjetivo) <= 0) {
+            setError('El monto objetivo debe ser mayor a 0');
+            return;
+        }
+        if (parseFloat(formData.montoObjetivo) > MAX_OBJECTIVE) {
+            setError(`El monto objetivo no puede ser mayor a ${MAX_OBJECTIVE.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+            return;
+        }
+        if (!formData.fechaLimite) {
+            setError('La fecha límite es obligatoria');
+            return;
+        }
+
         const data = {
             identificador: formData.identificador,
             montoObjetivo: parseFloat(formData.montoObjetivo),
@@ -75,8 +99,11 @@ const EditarMetaModal = ({ open, meta, onClose, onSaved }) => {
                             value={formData.montoObjetivo}
                             onChange={handleChange}
                             min="0.01"
+                            max={MAX_OBJECTIVE}
                             step="0.01"
                             disabled={loading}
+                            className={formData.montoObjetivo && parseFloat(formData.montoObjetivo) > MAX_OBJECTIVE ? 'invalid' : ''}
+                            aria-invalid={formData.montoObjetivo && parseFloat(formData.montoObjetivo) > MAX_OBJECTIVE}
                         />
                     </label>
                     <label>

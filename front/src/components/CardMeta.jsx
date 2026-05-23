@@ -3,6 +3,7 @@ import BarraProgreso from './BarraProgreso';
 import './CardMeta.css';
 import { useState } from 'react';
 import EditarMetaModal from './EditarMetaModal';
+import Icon from './Icon';
 
 const CardMeta = ({ meta }) => {
     const [showEditar, setShowEditar] = useState(false);
@@ -28,7 +29,10 @@ const CardMeta = ({ meta }) => {
         <>
             <div className={`card-meta ${estaCompletada ? 'completada' : ''}`}>
                 <div className="card-meta-header">
-                    <h3 className="card-meta-nombre">{meta.identificador}</h3>
+                    <div className="card-meta-title">
+                        <Icon name="target" className="card-meta-title-icon" />
+                        <h3 className="card-meta-nombre">{meta.identificador}</h3>
+                    </div>
                     {estaCompletada && <span className="badge-completada">Completada</span>}
                 </div>
                 
@@ -45,7 +49,7 @@ const CardMeta = ({ meta }) => {
 
                 <div className="card-meta-info">
                     <div className="card-meta-fecha">
-                        <span className="label">Fecha límite:</span>
+                        <span className="label"><Icon name="calendar" className="meta-info-icon" /> Fecha límite:</span>
                         <span className={`valor ${diasRestantes < 0 ? 'vencida' : ''}`}>
                             {formatDate(meta.fechaLimite)}
                             {diasRestantes >= 0 ? ` (${diasRestantes} días)` : ' (Vencida)'}
@@ -58,6 +62,7 @@ const CardMeta = ({ meta }) => {
                         Ver Detalle
                     </Link>
                     <button type="button" className="btn-editar" onClick={() => setShowEditar(true)}>
+                        <Icon name="edit" className="btn-icon" />
                         Editar
                     </button>
                 </div>

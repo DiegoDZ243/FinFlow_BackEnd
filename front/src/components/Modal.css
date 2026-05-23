@@ -61,6 +61,11 @@
     box-sizing: border-box;
 }
 
+.modal-form input.invalid,
+.modal-form textarea.invalid {
+    border-color: #e94560;
+}
+
 .modal-error {
     background-color: rgba(233, 69, 96, 0.12);
     border: 1px solid rgba(233, 69, 96, 0.35);

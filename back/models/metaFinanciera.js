@@ -27,7 +27,8 @@ const MetaFinanciera=sequelize.define("metasFinancieras",{
         type: DataTypes.DECIMAL(12, 2),
         allowNull: false,
         validate: {
-            min: 1
+            min: 1,
+            max: 99999999.99
         }
     },
     montoAlcanzado:{
@@ -56,7 +57,13 @@ const MetaFinanciera=sequelize.define("metasFinancieras",{
 },
 {
     tableName:'metasFinancieras',
-    timestamps:false
+    timestamps:false,
+    indexes:[
+        {
+            unique:true,
+            fields:['ahorradorId','identificador']
+        }
+    ]
 });
 
 module.exports=MetaFinanciera; 
