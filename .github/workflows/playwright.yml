@@ -27,12 +27,17 @@ jobs:
           --health-retries 30
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
+      # =========================
+      # Instalar dependencias
+      # =========================
       - name: Install root dependencies
         run: npm ci
 
@@ -44,6 +49,9 @@ jobs:
         working-directory: front
         run: npm ci
 
+      # =========================
+      # Backend
+      # =========================
       - name: Start backend
         working-directory: back
         env:
@@ -57,22 +65,38 @@ jobs:
           JWT_SECRET: test_secret
         run: npm start &
 
+      # =========================
+      # Frontend
+      # =========================
       - name: Start frontend
         working-directory: front
         run: npm run dev -- --host 0.0.0.0 &
 
+      # =========================
+      # Playwright
+      # =========================
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      # =========================
+      # Esperar servicios
+      # =========================
       - name: Wait for services
         run: |
           npx wait-on http://localhost:3000
           npx wait-on http://localhost:5173
 
+      # =========================
+      # Ejecutar pruebas
+      # =========================
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --reporter=line
 
-      - uses: actions/upload-artifact@v4
+      # =========================
+      # Reporte
+      # =========================
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
